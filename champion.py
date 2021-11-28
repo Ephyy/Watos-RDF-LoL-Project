@@ -7,13 +7,12 @@ class Champion:
     
     """
 
-    def __init__(self, key_name, name, attack, defense, magic, difficulty,
+    def __init__(self, key_name, attack, defense, magic, difficulty,
                  primary_position, secondary_position, info, key, partype,
-                 playstyle, region, relation, tags,
-                version):
+                 playstyle, region, relation, tags, releaseDate
+                ):
         
         self.key_name = key_name
-        self.name = name
         self.attack = attack
         self.defense = defense
         self.magic = magic
@@ -27,7 +26,7 @@ class Champion:
         self.region = region
         self.relation = relation
         self.tags = tags
-        self.version = version
+        self.releaseDate = releaseDate
         
     
     def rdfs_class_type(self):
@@ -51,7 +50,7 @@ class Champion:
         for tag in self.tags:
             tags += f'ex:{tag} , '
         
-        return f'ex:tags {tags[:-2]} .'
+        return f'ex:tags {tags[:-2]} ;'
     
     def rdfs_relation(self):
         
@@ -74,6 +73,9 @@ class Champion:
     def rdfs_partype(self):
         return f'ex:partype ex:{self.partype} ;'
     
+    def rdfs_realeaseDate(self):
+        return f'ex:releaseDate \"{self.releaseDate}\"^^xsd:date .'
+    
     def rdf_champ(self):
         
         """
@@ -89,6 +91,7 @@ class Champion:
         {self.rdfs_playstyle()}
         {self.rdfs_relation() if self.relation != [] else ''}
         {self.rdfs_tags()}
+        {self.rdfs_realeaseDate()}
               '''
               
         lines = text.split("\n")
@@ -113,7 +116,6 @@ def create_champion(champ, dict_info):
     """
     
     key_name = champ
-    name = dict_info['name']
     attack = dict_info['info']['attack']
     defense = dict_info['info']['defense']
     magic = dict_info['info']['magic']
@@ -127,12 +129,12 @@ def create_champion(champ, dict_info):
     region = dict_info['region']
     relation = dict_info['relation']
     tags = dict_info['tags']
-    version = dict_info['version']
+    releaseDate = dict_info['releaseDate']
     
-    return Champion(key_name, name, attack, defense, magic, difficulty,
+    return Champion(key_name, attack, defense, magic, difficulty,
                     primary_position, secondary_position, 
                     info, key, partype,playstyle, region,
-                    relation, tags,version
+                    relation, tags, releaseDate
                     )
 
 def json_to_champion(json_champ):
