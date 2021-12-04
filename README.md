@@ -1,6 +1,6 @@
 # Watos-RDF-LoL-Project
 
-Crear un modelo RDF del Universo del videojuego League of Legends e ilustrar ventajas de SPARQL sobre SQL.
+Repositorio del proyecto final para el curso CC7220 que busca crear un modelo RDF del universo del popular videojuego League of Legends e ilustrar ventajas de SPARQL sobre SQL.
 
 ## Fuentes:
 
