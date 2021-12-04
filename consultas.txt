@@ -1,0 +1,62 @@
+Consultas proyecto
+
+Champion(_name_, key, info,partype, playstyle, region, releaseDate, PrimaryPosition, SecondaryPosition, ThirdPosition)
+Tags(_C.name_, tag)
+Relations(_C.name_, relation)
+
+1.- Qué junglers actuales estaban presentes como campeones en la primera generación.
+
+SELECT name
+FROM champion
+WHERE date = '2009-02-21'
+AND primaryPosition = 'Jungle'
+OR secondaryPosition = 'Jungle'
+OR thirdPosition = 'Jungle'; 
+
+2.- La cantidad de relaciones que un campeón posee (que la flecha entre).
+
+SELECT relation, COUNT(*) as conteo
+FROM relations
+GROUP BY relation
+
+3.- Campeones cuya posicion primaria sea support y su playstyle sea burst
+
+SELECT name
+FROM champion
+WHERE primaryPosition = 'Support'
+AND playstyle = 'Burst';
+
+SELECT ?x, ?name, ?name2
+{
+   ?x a ex:Champion .
+   ?x ex:relation ?name .
+   ?name ex:relation ?name2
+   FILTER( ?x != ?name2)
+
+}
+
+# Consulta con un grado de separación
+
+# Consulta personajes con relacion pero de distinta region
+
+SELECT ?x,?r1, ?name, ?r2
+{
+   ?x a ex:Champion .
+   ?x ex:relation ?name .
+   ?x ex:region ?r1 .
+   ?name ex:region ?r2 .
+   FILTER( ?r1 != ?r2)
+}
+
+#Consulta para campeones y regiones cuya posicion primaria es jungla
+
+SELECT ?x, ?r1
+
+{
+   ?x a ex:Champion .
+   ?x ex:region ?r1 .
+   ?x ex:primaryPosition ?pp1 .
+   FILTER( ?pp1 = ex:Jungle) 
+   
+}
+ORDER BY ?r1

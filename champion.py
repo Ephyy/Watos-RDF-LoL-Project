@@ -7,19 +7,20 @@ class Champion:
     
     """
 
-    def __init__(self, key_name, name, attack, defense, magic, difficulty,
-                 primary_position, secondary_position, info, key, partype,
-                 playstyle, region, relation, tags,
-                version):
+    def __init__(self, key_name, attack, defense, magic, difficulty,
+                 primary_position, secondary_position, third_position, 
+                 info, key, partype, playstyle, region, relation, tags,
+                 releaseDate
+                ):
         
         self.key_name = key_name
-        self.name = name
         self.attack = attack
         self.defense = defense
         self.magic = magic
         self.difficulty = difficulty
         self.primary_position = primary_position
         self.secondary_position = secondary_position
+        self.third_position = third_position
         self.info = info
         self.key = key
         self.partype = partype
@@ -27,7 +28,7 @@ class Champion:
         self.region = region
         self.relation = relation
         self.tags = tags
-        self.version = version
+        self.releaseDate = releaseDate
         
     
     def rdfs_class_type(self):
@@ -39,11 +40,22 @@ class Champion:
     def rdfs_secondary_position(self):
         return f'ex:secondaryPosition ex:{self.secondary_position} ;'
     
+    def rdfs_third_position(self):
+        return f'ex:thirdPosition ex:{self.third_position} ;'
+    
     def rdfs_region(self):
         return f'ex:region ex:{self.region} ;'
     
     def rdfs_key(self):
         return f'ex:key ex:{self.key} ;'
+    
+    def rdfs_info(self):
+        
+        text = ''
+        for info in self.info:
+            text += f'ex:{info} \"{self.info[info]}\"^^xsd:int ;'
+            
+        return f'ex:info [ {text} ] ;'
     
     def rdfs_tags(self):
         
@@ -51,7 +63,7 @@ class Champion:
         for tag in self.tags:
             tags += f'ex:{tag} , '
         
-        return f'ex:tags {tags[:-2]} .'
+        return f'ex:tags {tags[:-2]} ;'
     
     def rdfs_relation(self):
         
@@ -74,6 +86,9 @@ class Champion:
     def rdfs_partype(self):
         return f'ex:partype ex:{self.partype} ;'
     
+    def rdfs_realeaseDate(self):
+        return f'ex:releaseDate \"{self.releaseDate}\"^^xsd:date .'
+    
     def rdf_champ(self):
         
         """
@@ -84,11 +99,13 @@ class Champion:
         text = f'''{self.rdfs_class_type()}
         {self.rdfs_primary_position()}
         {self.rdfs_secondary_position() if self.secondary_position != '' else ''}
+        {self.rdfs_third_position() if self.rdfs_third_position != '' else ''}
         {self.rdfs_region()}
         {self.rdfs_partype()}
         {self.rdfs_playstyle()}
         {self.rdfs_relation() if self.relation != [] else ''}
         {self.rdfs_tags()}
+        {self.rdfs_realeaseDate()}
               '''
               
         lines = text.split("\n")
@@ -113,13 +130,13 @@ def create_champion(champ, dict_info):
     """
     
     key_name = champ
-    name = dict_info['name']
     attack = dict_info['info']['attack']
     defense = dict_info['info']['defense']
     magic = dict_info['info']['magic']
     difficulty = dict_info['info']['difficulty']
     primary_position = dict_info["PrimaryPosition"]
     secondary_position = dict_info["SecondaryPosition"] if 'SecondaryPosition' in dict_info else ''
+    third_position = dict_info["ThirdPosition"] if 'ThirdPosition' in dict_info else ''
     info = dict_info['info']
     key = dict_info['key']
     partype = dict_info['partype']
@@ -127,12 +144,12 @@ def create_champion(champ, dict_info):
     region = dict_info['region']
     relation = dict_info['relation']
     tags = dict_info['tags']
-    version = dict_info['version']
+    releaseDate = dict_info['releaseDate']
     
-    return Champion(key_name, name, attack, defense, magic, difficulty,
-                    primary_position, secondary_position, 
+    return Champion(key_name, attack, defense, magic, difficulty,
+                    primary_position, secondary_position, third_position,
                     info, key, partype,playstyle, region,
-                    relation, tags,version
+                    relation, tags, releaseDate
                     )
 
 def json_to_champion(json_champ):
